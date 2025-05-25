@@ -1,23 +1,27 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class TreadingSystem : Singleton<TreadingSystem>
 {
-    [SerializeField] private TextMeshProUGUI currentCompanyName;
-    private Dictionary<int, Order[]> account;
-    private Company? currentCompany;
     [SerializeField] private List<Order> orders;
+    private Dictionary<int, Order[]> account;
+    public Action changedCompany;
+    private Company? currentCompany;
+    private Company? prevCompany;
 
-    private void Update()
+    protected override void OnSingletonAwake()
     {
-        if (currentCompany == null) return;
-        currentCompanyName.text = currentCompany.Value.name;
+        orders = new List<Order>();
     }
 
     public void UpdateCurrentCompany(Company company)
     {
+        prevCompany = currentCompany;
         currentCompany = company;
+        if (prevCompany.HasValue && prevCompany.Value.name == company.name) return;
+        changedCompany.Invoke();
     }
 
     public ulong GetOrderPrice(Company company)
@@ -41,7 +45,7 @@ public class TreadingSystem : Singleton<TreadingSystem>
         var money = MoneySystem.instance.GetMoney();
         var needMoney = (long)money - (long)price;
         if (needMoney < 0) return;
-        MoneySystem.instance.PayMoney((ulong)needMoney);
+        MoneySystem.instance.PayMoney(price);
 
         var order = new Order(name = company.name, price);
         orders.Add(order);
@@ -60,6 +64,23 @@ public class TreadingSystem : Singleton<TreadingSystem>
         if (currentCompany != null) Sell(currentCompany.Value);
     }
 
+    public void SellPart(ulong price)
+    {
+        // 부분 판매.
+        if (currentCompany == null) return;
+        var order = orders.Find(order => order.CompanyName == currentCompany.Value.name);
+        if (order == null) return;
+
+        if (order.Price < price)
+        {
+            Sell();
+            return;
+        }
+
+        order.Price -= price;
+        MoneySystem.instance.GiveMoney(price);
+    }
+
     public void SellAll()
     {
         // 가지고 있는 order를 account에 저장하고, give머니하면됨
@@ -73,5 +94,17 @@ public class TreadingSystem : Singleton<TreadingSystem>
             MoneySystem.instance.GiveMoney(price);
         });
         orders.Clear();
+    }
+
+    public Company? GetCurrentCompany()
+    {
+        return currentCompany;
+    }
+
+    [CanBeNull]
+    public Order GetCurrentCompanyOrder()
+    {
+        if (currentCompany.HasValue == false) return null;
+        return orders.Find(order => order.CompanyName == currentCompany.Value.name);
     }
 }

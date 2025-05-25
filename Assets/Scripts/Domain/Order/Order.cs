@@ -1,16 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
 
+[Serializable]
 public class Order
 {
-    [SerializeField] private readonly string companyName;
-    [SerializeField] private readonly ulong price;
+    private ulong price;
 
     public Order(string companyName, ulong price)
     {
-        this.companyName = companyName;
+        this.CompanyName = companyName;
         this.price = price;
     }
 
-    public string CompanyName => companyName;
-    public ulong Price => price;
+    public string CompanyName { get; }
+
+    public ulong Price
+    {
+        get => price;
+        set => price = value;
+    }
 }

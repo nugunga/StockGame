@@ -12,27 +12,13 @@ public class CanvasController : MonoBehaviour
         Next
     }
 
-    [SerializeField] private SceneType sceneType;
+
+    [field: SerializeField] private SceneType sceneType;
     [SerializeField] private GameObject[] sceneObjects;
 
-    private void FixedUpdate()
+    private void OnValidate()
     {
-        UpdateVisibleFalseChild();
-        switch (sceneType)
-        {
-            case SceneType.Main:
-                sceneObjects[0].SetActive(true);
-                break;
-            case SceneType.Treading:
-                sceneObjects[1].SetActive(true);
-                break;
-            case SceneType.Inform:
-                sceneObjects[2].SetActive(true);
-                break;
-            case SceneType.Next:
-                sceneObjects[3].SetActive(true);
-                break;
-        }
+        UIUpdate();
     }
 
     private void UpdateVisibleFalseChild()
@@ -63,5 +49,26 @@ public class CanvasController : MonoBehaviour
     public void ChangeScene(SceneType scene)
     {
         sceneType = scene;
+        UIUpdate();
+    }
+
+    public void UIUpdate()
+    {
+        UpdateVisibleFalseChild();
+        switch (sceneType)
+        {
+            case SceneType.Main:
+                sceneObjects[0].SetActive(true);
+                break;
+            case SceneType.Treading:
+                sceneObjects[1].SetActive(true);
+                break;
+            case SceneType.Inform:
+                sceneObjects[2].SetActive(true);
+                break;
+            case SceneType.Next:
+                sceneObjects[3].SetActive(true);
+                break;
+        }
     }
 }
