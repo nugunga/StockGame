@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TreadingSystem : Singleton<TreadingSystem>
 {
     [SerializeField] private List<Order> orders;
     private Dictionary<int, Order[]> account;
-    public Action changedCompany;
+    public UnityAction changedCompany;
     private Company? currentCompany;
     private Company? prevCompany;
 
@@ -21,14 +21,14 @@ public class TreadingSystem : Singleton<TreadingSystem>
         prevCompany = currentCompany;
         currentCompany = company;
         if (prevCompany.HasValue && prevCompany.Value.name == company.name) return;
-        changedCompany.Invoke();
+        if (changedCompany != null) changedCompany.Invoke();
     }
 
     public ulong GetOrderPrice(Company company)
     {
-        var order = orders.Find(order1 => order1.CompanyName == company.name);
+        var order = orders.Find(order1 => order1.companyName == company.name);
         if (order == null) return 0;
-        return order.Price;
+        return order.price;
     }
 
     public ulong GetOrderPrice()
@@ -56,7 +56,7 @@ public class TreadingSystem : Singleton<TreadingSystem>
         var price = GetOrderPrice();
         if (price <= 0) return;
         MoneySystem.instance.GiveMoney(price);
-        orders.Remove(orders.Find(order => order.CompanyName == company.name));
+        orders.Remove(orders.Find(order => order.companyName == company.name));
     }
 
     public void Sell()
@@ -68,16 +68,16 @@ public class TreadingSystem : Singleton<TreadingSystem>
     {
         // 부분 판매.
         if (currentCompany == null) return;
-        var order = orders.Find(order => order.CompanyName == currentCompany.Value.name);
+        var order = orders.Find(order => order.companyName == currentCompany.Value.name);
         if (order == null) return;
 
-        if (order.Price < price)
+        if (order.price < price)
         {
             Sell();
             return;
         }
 
-        order.Price -= price;
+        order.price -= price;
         MoneySystem.instance.GiveMoney(price);
     }
 
@@ -91,7 +91,7 @@ public class TreadingSystem : Singleton<TreadingSystem>
         {
             var companySystem = CompanySystem.instance;
             var price = companySystem.CalculatePrice(order);
-            MoneySystem.instance.GiveMoney(price);
+            MoneySystem.instance.GiveMoney((ulong)price);
         });
         orders.Clear();
     }
@@ -105,6 +105,6 @@ public class TreadingSystem : Singleton<TreadingSystem>
     public Order GetCurrentCompanyOrder()
     {
         if (currentCompany.HasValue == false) return null;
-        return orders.Find(order => order.CompanyName == currentCompany.Value.name);
+        return orders.Find(order => order.companyName == currentCompany.Value.name);
     }
 }

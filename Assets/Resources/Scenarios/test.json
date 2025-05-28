@@ -1,0 +1,32 @@
+﻿[
+  {
+    "name": "시발 A회사",
+    "description": "",
+    "image": "/Images/시발_A회사_CI",
+    "scenarios": [
+      {
+        "name": "1일차 이벤트",
+        "fluctuationRate": {
+          "type": "FIXED_RATE",
+          "value": 1.1,
+          "min": null,
+          "max": null
+        },
+        "coinInformation": [
+          {
+            "needCoins": "One",
+            "name": "1짜리 정보"
+          },
+          {
+            "needCoins": "Two",
+            "name": "2짜리 정보"
+          },
+          {
+            "needCoins": "Three",
+            "name": "3짜리 정보"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -36,14 +36,16 @@ public class OrderUI : MonoBehaviour
         buyAmountText.text = "";
         buyImage.fillAmount = 0f;
         buyRatioText.text = "None";
+        buyButton.interactable = false;
         sellAmountText.text = "";
         sellImage.fillAmount = 0f;
         sellRatioText.text = "None";
+        sellButton.interactable = false;
 
         var order = TreadingSystem.instance.GetCurrentCompanyOrder();
         sellButton.interactable = order != null;
         sellAmountText.interactable = order != null;
-        buyTotalText.text = $"{order?.Price ?? 0}원 구매 예정";
+        buyTotalText.text = $"{order?.price ?? 0}원 구매 예정";
     }
 
     public void UpdateBuyPrice(string price)
@@ -64,12 +66,14 @@ public class OrderUI : MonoBehaviour
 
     public void Buy()
     {
+        if (buyPrice == 0) return;
         TreadingSystem.instance.Buy(buyPrice);
         InitUI();
     }
 
     public void Sell()
     {
+        if (sellPrice == 0) return;
         TreadingSystem.instance.SellPart(sellPrice);
         InitUI();
     }
@@ -89,6 +93,8 @@ public class OrderUI : MonoBehaviour
         var price = buyPrice == 0 ? 1 : buyPrice;
         buyImage.fillAmount = (float)price / MoneySystem.instance.GetMoney();
         buyRatioText.text = $"{(float)price / MoneySystem.instance.GetMoney() * 100:F2}%";
+
+        if (buyPrice == 1) buyButton.interactable = MoneySystem.instance.GetMoney() >= buyPrice;
     }
 
     private void UpdateSellUI(Company company)
@@ -97,14 +103,16 @@ public class OrderUI : MonoBehaviour
         var order = TreadingSystem.instance.GetCurrentCompanyOrder();
         if (order == null) return;
 
-        sellImage.fillAmount = (float)sellPrice / order.Price;
-        sellRatioText.text = $"{(float)sellPrice / order.Price * 100:F2}%";
+        sellImage.fillAmount = (float)sellPrice / order.price;
+        sellRatioText.text = $"{(float)sellPrice / order.price * 100:F2}%";
+
+        if (sellPrice == 1) sellButton.interactable = order.price >= sellPrice;
     }
 
     private void UpdateCommonUI(Company company)
     {
         currentCompanyName.text = company.name;
         var order = TreadingSystem.instance.GetCurrentCompanyOrder();
-        buyTotalText.text = $"{order?.Price ?? 0}원 구매 예정";
+        buyTotalText.text = $"{order?.price ?? 0}원 구매 예정";
     }
 }

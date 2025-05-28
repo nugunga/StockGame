@@ -3,19 +3,12 @@
 [Serializable]
 public class Order
 {
-    private ulong price;
+    public string companyName;
+    public ulong price;
 
     public Order(string companyName, ulong price)
     {
-        this.CompanyName = companyName;
+        this.companyName = companyName;
         this.price = price;
-    }
-
-    public string CompanyName { get; }
-
-    public ulong Price
-    {
-        get => price;
-        set => price = value;
     }
 }

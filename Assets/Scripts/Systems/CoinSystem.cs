@@ -1,11 +1,16 @@
-using System;
 using TMPro;
 using UnityEngine;
 
-public class CoinSystem: Singleton<CoinSystem>
+public class CoinSystem : Singleton<CoinSystem>
 {
     [SerializeField] private ulong coin = 5;
     [SerializeField] private TextMeshProUGUI coinText;
+
+    private void Update()
+    {
+        if (!coinText) return;
+        coinText.text = coin.ToString();
+    }
 
     public void PayCoin(ulong needCoins)
     {
@@ -17,9 +22,8 @@ public class CoinSystem: Singleton<CoinSystem>
         coin += needCoins;
     }
 
-    private void Update()
+    public ulong GetCoin()
     {
-        if (!this.coinText) return;
-        this.coinText.text = coin.ToString();
+        return coin;
     }
 }

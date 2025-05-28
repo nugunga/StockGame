@@ -1,4 +1,7 @@
-﻿public enum NeedCoins
+﻿using System;
+
+[Serializable]
+public enum NeedCoins
 {
     One,
     Two,

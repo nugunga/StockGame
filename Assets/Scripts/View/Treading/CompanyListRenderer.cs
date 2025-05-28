@@ -1,10 +1,17 @@
 ﻿using System.Linq;
 using ScrollCarousel;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CompanyListRenderer : MonoBehaviour
 {
     [SerializeField] private Carousel carousel;
+    [SerializeField] private bool isButton;
+    [SerializeField] private UnityEvent<Company> onClick;
+    [SerializeField] private UnityEvent<Company> onChanged;
+
+    private Company? currentCompany;
+    private Company? prevCompany;
 
     private void Awake()
     {
@@ -17,6 +24,15 @@ public class CompanyListRenderer : MonoBehaviour
             var ui = child.GetComponent<CompanyUI>();
             ui.UpdateCompany(company);
 
+            if (isButton)
+            {
+                var button = child.AddComponent<CarouselButton>();
+                button.onClick.AddListener(() =>
+                {
+                    if (currentCompany != null) onClick.Invoke(currentCompany.Value);
+                });
+            }
+
             return child.GetComponent<RectTransform>();
         });
 
@@ -26,9 +42,11 @@ public class CompanyListRenderer : MonoBehaviour
     private void Update()
     {
         var currentUI = GetCurrentItem();
-        var currentCompany = currentUI.GetCompany();
-        if (!currentCompany.HasValue) return;
-        TreadingSystem.instance.UpdateCurrentCompany(currentCompany.Value);
+        currentCompany = currentUI.GetCompany();
+        if (prevCompany.HasValue && currentCompany != null &&
+            prevCompany.Value.name == currentCompany.Value.name) return;
+        prevCompany = currentCompany;
+        if (currentCompany != null) onChanged.Invoke(currentCompany.Value);
     }
 
     public CompanyUI GetCurrentItem()
