@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class MoneySystem : Singleton<MoneySystem>
 {
-    [SerializeField] private ulong money;
+    [SerializeField] private ulong initMoney;
+    [SerializeField] private ulong currentMoney;
     [SerializeField] private TextMeshProUGUI moneyText;
+
+    public void Reset()
+    {
+        currentMoney = initMoney;
+    }
 
     private void Update()
     {
@@ -12,24 +18,29 @@ public class MoneySystem : Singleton<MoneySystem>
         moneyText.text = MoneyToString();
     }
 
+    protected override void OnSingletonAwake()
+    {
+        Reset();
+    }
+
     public ulong GetMoney()
     {
-        return money;
+        return currentMoney;
     }
 
     public void PayMoney(ulong needCoins)
     {
-        money -= needCoins;
+        currentMoney -= needCoins;
     }
 
     public void GiveMoney(ulong needCoins)
     {
-        money += needCoins;
+        currentMoney += needCoins;
     }
 
     private string MoneyToString()
     {
         // 000,000,000
-        return $"{money:n0}";
+        return $"{currentMoney:n0}";
     }
 }

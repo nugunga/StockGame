@@ -3,27 +3,39 @@ using UnityEngine;
 
 public class CoinSystem : Singleton<CoinSystem>
 {
-    [SerializeField] private ulong coin = 5;
+    [SerializeField] private ulong initCoin;
+    [SerializeField] private ulong currentCoin;
     [SerializeField] private TextMeshProUGUI coinText;
+
+    public void Reset()
+    {
+        currentCoin = initCoin;
+    }
 
     private void Update()
     {
         if (!coinText) return;
-        coinText.text = coin.ToString();
+        coinText.text = currentCoin.ToString();
+    }
+
+    protected override void OnSingletonAwake()
+    {
+        Reset();
     }
 
     public void PayCoin(ulong needCoins)
     {
-        coin -= needCoins;
+        if (currentCoin < needCoins) return;
+        currentCoin -= needCoins;
     }
 
     public void GiveCoin(ulong needCoins)
     {
-        coin += needCoins;
+        currentCoin += needCoins;
     }
 
     public ulong GetCoin()
     {
-        return coin;
+        return currentCoin;
     }
 }

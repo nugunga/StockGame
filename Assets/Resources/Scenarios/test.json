@@ -1,32 +1,114 @@
-﻿[
-  {
-    "name": "시발 A회사",
-    "description": "",
-    "image": "/Images/시발_A회사_CI",
-    "scenarios": [
-      {
-        "name": "1일차 이벤트",
-        "fluctuationRate": {
-          "type": "FIXED_RATE",
-          "value": 1.1,
-          "min": null,
-          "max": null
+﻿{
+  "companies": [
+    {
+      "name": "시발 A회사",
+      "description": "",
+      "image": "Images/시발_A회사/CI",
+      "scenarios": [
+        {
+          "name": "<color=black>1일차 이벤트</color>",
+          "image": "Images/시발_A회사/1일차",
+          "fluctuationRate": {
+            "type": "FIXED_RATE",
+            "value": 1.1,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "coinInformation": [
+            {
+              "needCoins": "One",
+              "name": "1짜리 정보"
+            },
+            {
+              "needCoins": "Two",
+              "name": "2짜리 정보"
+            },
+            {
+              "needCoins": "Three",
+              "name": "3짜리 정보"
+            }
+          ]
         },
-        "coinInformation": [
-          {
-            "needCoins": "One",
-            "name": "1짜리 정보"
+        {
+          "name": "<color=black>2일차 이벤트</color>",
+          "image": "Images/시발_A회사/2일차",
+          "fluctuationRate": {
+            "type": "FIXED_RATE",
+            "value": 1.1,
+            "min": 0.0,
+            "max": 0.0
           },
-          {
-            "needCoins": "Two",
-            "name": "2짜리 정보"
+          "coinInformation": [
+            {
+              "needCoins": "One",
+              "name": "1짜리 정보"
+            },
+            {
+              "needCoins": "Two",
+              "name": "2짜리 정보"
+            },
+            {
+              "needCoins": "Three",
+              "name": "3짜리 정보"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "시발 B회사",
+      "description": "",
+      "image": "Images/시발_B회사/CI",
+      "scenarios": [
+        {
+          "name": "<color=black>1일차 이벤트</color>",
+          "image": "Images/시발_B회사/1일차",
+          "fluctuationRate": {
+            "type": "FIXED_RATE",
+            "value": 1.1,
+            "min": 0.0,
+            "max": 0.0
           },
-          {
-            "needCoins": "Three",
-            "name": "3짜리 정보"
-          }
-        ]
-      }
-    ]
-  }
-]
+          "coinInformation": [
+            {
+              "needCoins": "One",
+              "name": "1짜리 정보"
+            },
+            {
+              "needCoins": "Two",
+              "name": "2짜리 정보"
+            },
+            {
+              "needCoins": "Three",
+              "name": "3짜리 정보"
+            }
+          ]
+        },
+        {
+          "name": "<color=black>2일차 이벤트</color>",
+          "image": "Images/시발_B회사/2일차",
+          "fluctuationRate": {
+            "type": "FIXED_RATE",
+            "value": 1.1,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "coinInformation": [
+            {
+              "needCoins": "One",
+              "name": "1짜리 정보"
+            },
+            {
+              "needCoins": "Two",
+              "name": "2짜리 정보"
+            },
+            {
+              "needCoins": "Three",
+              "name": "3짜리 정보"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

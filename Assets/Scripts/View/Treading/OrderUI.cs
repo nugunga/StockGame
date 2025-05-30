@@ -26,6 +26,11 @@ public class OrderUI : MonoBehaviour
         InitUI();
     }
 
+    private void OnEnable()
+    {
+        InitUI();
+    }
+
     private void InitUI()
     {
         var company = TreadingSystem.instance.GetCurrentCompany();
@@ -94,7 +99,7 @@ public class OrderUI : MonoBehaviour
         buyImage.fillAmount = (float)price / MoneySystem.instance.GetMoney();
         buyRatioText.text = $"{(float)price / MoneySystem.instance.GetMoney() * 100:F2}%";
 
-        if (buyPrice == 1) buyButton.interactable = MoneySystem.instance.GetMoney() >= buyPrice;
+        buyButton.interactable = buyPrice != 0 && MoneySystem.instance.GetMoney() >= buyPrice;
     }
 
     private void UpdateSellUI(Company company)
@@ -106,7 +111,7 @@ public class OrderUI : MonoBehaviour
         sellImage.fillAmount = (float)sellPrice / order.price;
         sellRatioText.text = $"{(float)sellPrice / order.price * 100:F2}%";
 
-        if (sellPrice == 1) sellButton.interactable = order.price >= sellPrice;
+        sellButton.interactable = sellPrice == 0 && order.price >= sellPrice;
     }
 
     private void UpdateCommonUI(Company company)

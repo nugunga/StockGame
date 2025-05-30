@@ -3,7 +3,7 @@
 [Serializable]
 public enum NeedCoins
 {
-    One,
+    One = 1,
     Two,
     Three
 }

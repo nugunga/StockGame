@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,14 +7,20 @@ using UnityEngine.Events;
 public class TreadingSystem : Singleton<TreadingSystem>
 {
     [SerializeField] private List<Order> orders;
-    private Dictionary<int, Order[]> account;
+    [SerializeField] private SerializedDictionary<int, Order[]> account;
     public UnityAction changedCompany;
     private Company? currentCompany;
     private Company? prevCompany;
 
-    protected override void OnSingletonAwake()
+    public void Reset()
     {
         orders = new List<Order>();
+        account = new SerializedDictionary<int, Order[]>();
+    }
+
+    protected override void OnSingletonAwake()
+    {
+        Reset();
     }
 
     public void UpdateCurrentCompany(Company company)
@@ -47,8 +54,17 @@ public class TreadingSystem : Singleton<TreadingSystem>
         if (needMoney < 0) return;
         MoneySystem.instance.PayMoney(price);
 
-        var order = new Order(name = company.name, price);
-        orders.Add(order);
+        // 만약에 order가 있다면, 해당 order 업데이트
+        if (orders.Exists(order => order.companyName == company.name))
+        {
+            var order = orders.Find(order => order.companyName == company.name);
+            order.price += price;
+        }
+        else
+        {
+            var order = new Order(name = company.name, price);
+            orders.Add(order);
+        }
     }
 
     public void Sell(Company company)

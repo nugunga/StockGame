@@ -9,9 +9,9 @@ public class CompanyLoader
     public List<Company> Load(string resourcePath)
     {
         var json = Resources.Load<TextAsset>(resourcePath);
-        var dto = JsonUtility.FromJson<List<CompanyDto>>(json.text);
+        var dto = JsonUtility.FromJson<Results>(json.text);
 
-        return dto.Select(companyDto =>
+        return dto.companies.Select(companyDto =>
         {
             var spritePath = companyDto.image;
             var sprite = Resources.Load<Sprite>(spritePath);
@@ -24,19 +24,25 @@ public class CompanyLoader
                 {
                     IFluctuationRate fluctuationRate =
                         scenarioDto.fluctuationRate.type == FluctuationRateDto.FluctuationRateDtoType.FIXED_RATE
-                            ? new FixedFluctuationRate((float)scenarioDto.fluctuationRate.value.Value)
-                            : new RangedFluctuationRate((float)scenarioDto.fluctuationRate.min.Value,
-                                (float)scenarioDto.fluctuationRate.max.Value);
+                            ? new FixedFluctuationRate(scenarioDto.fluctuationRate.value)
+                            : new RangedFluctuationRate(scenarioDto.fluctuationRate.min,
+                                scenarioDto.fluctuationRate.max);
 
                     var dictionary = new SerializedDictionary<NeedCoins, CoinInformation>();
                     foreach (var coinInformationDto in scenarioDto.coinInformation)
-                        dictionary.Add(coinInformationDto.needCoins,
-                            new CoinInformation(coinInformationDto.needCoins, coinInformationDto.name));
+                    {
+                        var needCoins = Enum.Parse<NeedCoins>(coinInformationDto.needCoins);
+                        dictionary.Add(needCoins, new CoinInformation(needCoins, coinInformationDto.name));
+                    }
+
+                    var imagePath = scenarioDto.image;
+                    var image = Resources.Load<Sprite>(imagePath);
 
                     return new Scenario(
                         scenarioDto.name,
                         fluctuationRate,
-                        dictionary
+                        dictionary,
+                        image
                     );
                 }).ToList());
         }).ToList();
@@ -45,7 +51,7 @@ public class CompanyLoader
     [Serializable]
     public class CoinInformationDto
     {
-        public NeedCoins needCoins;
+        public string needCoins;
         public string name;
     }
 
@@ -59,9 +65,9 @@ public class CompanyLoader
         }
 
         public FluctuationRateDtoType type;
-        public double? max;
-        public double? min;
-        public double? value;
+        public float max;
+        public float min;
+        public float value;
     }
 
     [Serializable]
@@ -70,6 +76,7 @@ public class CompanyLoader
         public List<CoinInformationDto> coinInformation;
         public FluctuationRateDto fluctuationRate;
         public string name;
+        public string image;
     }
 
     [Serializable]
@@ -79,5 +86,10 @@ public class CompanyLoader
         public string image;
         public string name;
         public List<ScenarioDto> scenarios;
+    }
+
+    public class Results
+    {
+        public List<CompanyDto> companies;
     }
 }

@@ -11,10 +11,15 @@ public class InformationSystem : Singleton<InformationSystem>
 
     private Company? currentCompany;
 
-    protected override void OnSingletonAwake()
+    public void Reset()
     {
         InitUI();
         UpdateButtonInteraction();
+    }
+
+    protected override void OnSingletonAwake()
+    {
+        Reset();
     }
 
     private void InitUI()
@@ -31,7 +36,9 @@ public class InformationSystem : Singleton<InformationSystem>
             if (currentCompany != null)
             {
                 var needCoin = i == 0 ? NeedCoins.One : i == 1 ? NeedCoins.Two : NeedCoins.Three;
-                coinButtons[i].interactable = !CompanySystem.instance.IsBuyScenario(currentCompany.Value, needCoin);
+                var isBuy = CompanySystem.instance.IsBuyScenario(currentCompany.Value, needCoin);
+                var isNotEnoughCoin = CoinSystem.instance.GetCoin() >= (ulong)i + 1;
+                coinButtons[i].interactable = !isBuy && isNotEnoughCoin;
             }
         }
     }

@@ -9,10 +9,15 @@ public class CompanySystem : Singleton<CompanySystem>
     [SerializeField] private string resourcePath;
     public List<Company> Companies => companies;
 
-    protected override void OnSingletonAwake()
+    public void Reset()
     {
         companies = new CompanyLoader().Load(resourcePath);
         UpdateScenario();
+    }
+
+    protected override void OnSingletonAwake()
+    {
+        Reset();
     }
 
     public double CalculatePrice(Order order)
@@ -26,6 +31,7 @@ public class CompanySystem : Singleton<CompanySystem>
     {
         var day = DaySystem.instance.GetDay();
         currentScenarios = new SerializedDictionary<string, Scenario>();
+        if (DaySystem.instance.IsEnd()) return;
         companies.ForEach(company => currentScenarios.Add(company.name, company.scenarios[day - 1]));
     }
 

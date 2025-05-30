@@ -1,20 +1,24 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 [Serializable]
 public struct Scenario
 {
     public string name;
+    public Sprite image;
     public NewsType newsType => fluctuationRate.GetValue() > 1 ? NewsType.Good : NewsType.Bad;
     public IFluctuationRate fluctuationRate;
-    public SerializedDictionary<NeedCoins, CoinInformation> coinInformation;
+    [SerializeField] public SerializedDictionary<NeedCoins, CoinInformation> coinInformation;
 
     public Scenario(string name, IFluctuationRate fluctuationRate,
-        SerializedDictionary<NeedCoins, CoinInformation> coinInformation)
+        SerializedDictionary<NeedCoins, CoinInformation> coinInformation,
+        Sprite image)
     {
         this.name = name;
         this.fluctuationRate = fluctuationRate;
         this.coinInformation = coinInformation;
+        this.image = image;
     }
 
     public void BuyInformation(NeedCoins coins)
@@ -32,7 +36,7 @@ public struct Scenario
 
     public Scenario Clone()
     {
-        return new Scenario(name, fluctuationRate, coinInformation);
+        return new Scenario(name, fluctuationRate, coinInformation, image);
     }
 
     public Scenario Buy(NeedCoins coins)

@@ -6,15 +6,18 @@ public class CanvasController : MonoBehaviour
     [Serializable]
     public enum SceneType
     {
+        Entry = 0,
         Main,
         Treading,
         Inform,
-        Next
+        Next,
+        End
     }
 
 
-    [field: SerializeField] private SceneType sceneType;
+    [SerializeField] private SceneType sceneType;
     [SerializeField] private GameObject[] sceneObjects;
+    [SerializeField] private GameObject globalPanel;
 
     private void OnValidate()
     {
@@ -24,6 +27,16 @@ public class CanvasController : MonoBehaviour
     private void UpdateVisibleFalseChild()
     {
         foreach (var sceneObject in sceneObjects) sceneObject.SetActive(false);
+    }
+
+    public void ChangeEntryScene()
+    {
+        ChangeScene(SceneType.Entry);
+    }
+
+    public void ChangeMainScene()
+    {
+        ChangeScene(SceneType.Main);
     }
 
     public void ChangeTreadingScene()
@@ -41,9 +54,9 @@ public class CanvasController : MonoBehaviour
         ChangeScene(SceneType.Next);
     }
 
-    public void ChangeMainScene()
+    public void ChangeEndScene()
     {
-        ChangeScene(SceneType.Main);
+        ChangeScene(SceneType.End);
     }
 
     public void ChangeScene(SceneType scene)
@@ -55,20 +68,7 @@ public class CanvasController : MonoBehaviour
     public void UIUpdate()
     {
         UpdateVisibleFalseChild();
-        switch (sceneType)
-        {
-            case SceneType.Main:
-                sceneObjects[0].SetActive(true);
-                break;
-            case SceneType.Treading:
-                sceneObjects[1].SetActive(true);
-                break;
-            case SceneType.Inform:
-                sceneObjects[2].SetActive(true);
-                break;
-            case SceneType.Next:
-                sceneObjects[3].SetActive(true);
-                break;
-        }
+        sceneObjects[(int)sceneType].SetActive(true);
+        globalPanel.SetActive(sceneType != SceneType.Entry);
     }
 }
