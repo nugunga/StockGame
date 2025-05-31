@@ -43,4 +43,10 @@ public class MoneySystem : Singleton<MoneySystem>
         // 000,000,000
         return $"{currentMoney:n0}";
     }
+
+    public string MoneyToString(ulong money)
+    {
+        // 000,000,000
+        return $"{money:n0}";
+    }
 }

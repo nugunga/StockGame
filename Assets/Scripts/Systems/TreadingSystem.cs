@@ -8,6 +8,7 @@ public class TreadingSystem : Singleton<TreadingSystem>
 {
     [SerializeField] private List<Order> orders;
     [SerializeField] private SerializedDictionary<int, Order[]> account;
+    [SerializeField] private SerializedDictionary<int, ulong> accountPrice;
     public UnityAction changedCompany;
     private Company? currentCompany;
     private Company? prevCompany;
@@ -16,6 +17,8 @@ public class TreadingSystem : Singleton<TreadingSystem>
     {
         orders = new List<Order>();
         account = new SerializedDictionary<int, Order[]>();
+        accountPrice = new SerializedDictionary<int, ulong>();
+        accountPrice.Add(DaySystem.instance.GetDay(), MoneySystem.instance.GetMoney());
     }
 
     protected override void OnSingletonAwake()
@@ -110,6 +113,7 @@ public class TreadingSystem : Singleton<TreadingSystem>
             MoneySystem.instance.GiveMoney((ulong)price);
         });
         orders.Clear();
+        accountPrice.Add(currentDay, MoneySystem.instance.GetMoney());
     }
 
     public Company? GetCurrentCompany()
@@ -122,5 +126,15 @@ public class TreadingSystem : Singleton<TreadingSystem>
     {
         if (currentCompany.HasValue == false) return null;
         return orders.Find(order => order.companyName == currentCompany.Value.name);
+    }
+
+    public Dictionary<int, Order[]> GetAccount()
+    {
+        return account;
+    }
+
+    public Dictionary<int, ulong> GetAccountPrice()
+    {
+        return accountPrice;
     }
 }

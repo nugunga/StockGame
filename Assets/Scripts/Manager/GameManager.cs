@@ -14,6 +14,8 @@ public class GameManager : Singleton<MonoBehaviour>
 
     public void EndGame()
     {
+        DaySystem.instance.NextDay();
+        TreadingSystem.instance.SellAll();
         canvasController.ChangeEndScene();
     }
 
